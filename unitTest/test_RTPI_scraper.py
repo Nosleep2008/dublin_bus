@@ -1,4 +1,4 @@
-from dublin_bus import RTPI_scraper
+from dublin_bus.scrapers import RTPI_scraper
 
 
 def test_get_rtpi_1():
