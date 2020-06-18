@@ -16,10 +16,15 @@ def getRTPI(stopid):
 
     url = "https://data.smartdublin.ie/cgi-bin/rtpi/realtimebusinformation?stopid=" + str(stopid) + "&format=json"
 
-    RTPI_json = requests.get(url).json()
+    response = requests.get(url)
+    RTPI_json = response.json()
 
     errorCode = int(RTPI_json['errorcode'])
     result = RTPI_json['results']
+
+    # Make sure the request has succeeded
+    if response.status_code != 200:
+        return None
 
     # if input a wrong stop ID, function will return None
     if errorCode:
