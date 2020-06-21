@@ -1,5 +1,5 @@
 // Initialize and add the map
-function initMap() {
+function init() {
     // The location of the centre of Dublin
     var dublin = {lat: 53.3479538, lng: -6.2708115};
     // The map, centered at Uluru
@@ -23,8 +23,17 @@ function initMap() {
     // Initialise the autocomplete object for two input form
     var autocomplete_start = new google.maps.places.Autocomplete(input_start, options);
     var autocomplete_end = new google.maps.places.Autocomplete(input_end, options);
+
+
+    // Initialise the datetimepicker's parameters
+    $("#datetime_picker").datetimepicker({
+        format: "dd MM yyyy - hh:ii",
+        autoclose: true, // Auto close the dropdown box when picking finished
+        todayBtn: true, // The button pick up current date and time
+        minuteStep: 5 // Time step every 5 mins
+    });
 }
 
 
 // Listener that call the initMap when the window finished render
-google.maps.event.addDomListener(window, 'load', initMap);
+google.maps.event.addDomListener(window, 'load', init);
