@@ -20,8 +20,12 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     <!-- js -->
     <script src="../static/js/jquery-1.11.1.min.js"></script>
     <script src="../static/js/index_map.js"></script>
-
     <!-- //js -->
+    <!-- for-datetime-picker-->
+    <script src="../static/js/bootstrap-datetimepicker.js"></script>
+    <link href="../static/css/bootstrap-datetimepicker.css" rel="stylesheet">
+    <link href="../static/css/datetimepicker.css" rel="stylesheet">
+    <!-- //for-datetime-picker-->
     <!-- FlexSlider -->
     <link rel="stylesheet" href="../static/css/flexslider.css" type="text/css" media="screen"/>
     <script defer src="../static/js/jquery.flexslider.js"></script>
@@ -194,9 +198,15 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         <!-- //searching-box-top-->
         <div id="searching_box">
             <label for="start_location">Start</label>
-            <input id="start_location" type="text" placeholder="From:"/>
+            <input id="start_location" class="form-control" type="text" placeholder="From:"/>
             <label for="end_location">End</label>
-            <input id="end_location" type="text" placeholder="To:"/>
+            <input id="end_location" class="form-control" type="text" placeholder="To:"/>
+            <label for="datetime_picker">Depart Time:</label>
+            <div class="input-group date" id="datetime_picker">
+                <input size="16" type="text" value="" readonly class="form-control">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-remove"></i></span>
+                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+            </div>
         </div>
         <!-- //searching-box-bottom-->
 
@@ -282,7 +292,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <!--</script>-->
 <!--The old API cannot be access to some functions, so the new one was used-->
 <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoI276ljCuDSuJtwX7hpN5O5wi8P-rsZc&libraries=places&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoI276ljCuDSuJtwX7hpN5O5wi8P-rsZc&libraries=places&callback=init">
 </script>
 
 
