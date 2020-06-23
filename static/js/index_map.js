@@ -32,8 +32,20 @@ function init() {
         todayBtn: true, // The button pick up current date and time
         minuteStep: 5 // Time step every 5 mins
     });
+
+
+    // Get the picked time from datetime picker
+    $('#search_sumbit').on('click', function () {
+        var depart_time = $('#datetime_picker').datetimepicker('getDate');
+        // Timestamp will have a tolerance on second not strictly 00 second, recommending a format later
+        depart_time = depart_time.getTime() / 1000;
+        var depart_loc = document.getElementById('start_location').value;
+        var arrival_loc = document.getElementById('end_location').value;
+    });
+
 }
 
 
 // Listener that call the initMap when the window finished render
 google.maps.event.addDomListener(window, 'load', init);
+
