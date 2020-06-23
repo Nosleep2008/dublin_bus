@@ -196,18 +196,33 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         <!-- //function-bottom -->
 
         <!-- //searching-box-top-->
-        <div id="searching_box">
-            <label for="start_location">Start</label>
-            <input id="start_location" class="form-control" type="text" placeholder="From:"/>
-            <label for="end_location">End</label>
-            <input id="end_location" class="form-control" type="text" placeholder="To:"/>
-            <label for="datetime_picker">Depart Time:</label>
-            <div class="input-group date" id="datetime_picker">
-                <input size="16" type="text" value="" readonly class="form-control">
-                <span class="input-group-addon"><i class="glyphicon glyphicon-remove"></i></span>
-                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+        <!-- //remove button for searching input-->
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+        <style>
+            input[type="search"]::-webkit-search-cancel-button {
+                -webkit-appearance: searchfield-cancel-button;
+            }
+        </style>
+
+        <form>
+            <div class="form-group">
+                <label for="start_location">Start</label>
+                <input id="start_location" class="form-control" type="search" placeholder="From:"/>
             </div>
-        </div>
+            <div class="form-group">
+                <label for="end_location">End</label>
+                <input id="end_location" class="form-control" type="search" placeholder="To:"/>
+            </div>
+            <div class="form-group">
+                <label for="datetime_picker">Depart Time:</label>
+                <div class="input-group date" id="datetime_picker">
+                    <input size="16" type="text" value="" readonly class="form-control">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-remove"></i></span>
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
+            </div>
+            <button id="search_sumbit" type="button" class="btn btn-primary">Submit</button>
+        </form>
         <!-- //searching-box-bottom-->
 
         <!-- //map-top -->
