@@ -12,17 +12,14 @@ function init() {
     // Get input from two input form
     var input_start = document.getElementById('start_location');
     var input_end = document.getElementById('end_location');
-    // Set the bound of Dublin city
-    var cityBounds = new google.maps.LatLngBounds(
-        new google.maps.LatLng(53.00, -6.85),
-        new google.maps.LatLng(53.68, -5.90));
-    var options = {
-        bounds: cityBounds,
-        strictBounds: true,
-    };
     // Initialise the autocomplete object for two input form
-    var autocomplete_start = new google.maps.places.Autocomplete(input_start, options);
-    var autocomplete_end = new google.maps.places.Autocomplete(input_end, options);
+    var autocomplete_start = new google.maps.places.Autocomplete(input_start);
+    var autocomplete_end = new google.maps.places.Autocomplete(input_end);
+    // Bind the map's bounds (viewport) property to the autocomplete object,
+    // so that the autocomplete requests use the current map bounds for the
+    // bounds option in the request.
+    autocomplete_start.bindTo('bounds', map);
+    autocomplete_end.bindTo('bounds', map);
 
 
     // Initialise the datetimepicker's parameters
