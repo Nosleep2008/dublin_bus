@@ -5,8 +5,15 @@ function init() {
     // The map, centered at Uluru
     var map = new google.maps.Map(
         document.getElementById('map'), {zoom: 12, center: dublin});
-    // The marker, positioned at Dublin
-    var marker = new google.maps.Marker({position: dublin, map: map});
+    // The marker, positioned at Dublin(no need now)
+    // var marker = new google.maps.Marker({position: dublin, map: map});
+    // Initialise the direction service
+    var directionsRenderer = new google.maps.DirectionsRenderer();
+    var directionsService = new google.maps.DirectionsService();
+    // Render the map and display the route
+    directionsRenderer.setMap(map);
+    // Show the route on the right panel
+    // directionsRenderer.setPanel(document.getElementById("right-panel"));
 
 
     // Get input from two input form
@@ -22,7 +29,7 @@ function init() {
     autocomplete_end.bindTo('bounds', map);
 
 
-    // Initialise the datetimepicker's parameters
+    // Initialise the datetime picker's parameters
     $("#datetime_picker").datetimepicker({
         format: "dd MM yyyy - hh:ii",
         autoclose: true, // Auto close the dropdown box when picking finished
@@ -31,15 +38,136 @@ function init() {
     });
 
 
-    // Get the picked time from datetime picker
+    // Submit button upload the data
     $('#search_sumbit').on('click', function () {
+        // Get timestamp from datetime picker
         var depart_time = $('#datetime_picker').datetimepicker('getDate');
-        // Timestamp will have a tolerance on second not strictly 00 second, recommending a format later
-        depart_time = depart_time.getTime() / 1000;
-        var depart_loc = document.getElementById('start_location').value;
-        var arrival_loc = document.getElementById('end_location').value;
-    });
+        // Timestamp will have a tolerance on second not strictly 00 second, recommending a format later(no need now)
+        // depart_time = depart_time.getTime() / 1000;
 
+        // Call the function to generate the possible route
+        calculateAndDisplayRoute(directionsService, directionsRenderer);
+
+        // Handle Asynchronous problem
+        setTimeout(function () {
+            console.log(JSONallSteps);
+        },1000);
+
+    });
+}
+
+
+function calculateAndDisplayRoute(directionsService, directionsRenderer) {
+    // Get locations of start and end from input box
+    var start = document.getElementById('start_location').value;
+    var end = document.getElementById('end_location').value;
+    // It is a date object
+    var depart_time = $('#datetime_picker').datetimepicker('getDate');
+    directionsService.route(
+        {
+            origin: start,
+            destination: end,
+            // default travelMode is transit
+            travelMode: "TRANSIT",
+            transitOptions: {
+                // Set the depart time
+                departureTime: depart_time,
+            },
+        },
+        function (response, status) {
+            if (status === "OK") {
+                // Render and display the route on the map
+                directionsRenderer.setDirections(response);
+
+                // Check the response
+                // console.log(response);
+                // Origin and destination address
+                originAddress = response.request.destination.query;
+                destionationAddress = response.request.destination.query;
+                // console.log(originAddress);
+
+                // Pick the first (best) route from the given request
+                bestRoute = response.routes[0];
+                // The transmit steps in the bestRoute
+                bestRoute = bestRoute.legs[0];
+
+                // The steps number of whole route
+                transitStep = bestRoute.steps
+                stepNum = transitStep.length;
+
+                // Initialise the list
+                var allSteps = [];
+
+                // iterate each step to get the information needed
+                transitStep.forEach(function (data, index) {
+                    // Initialise the dictionary stored each step info
+                    var stepDict = {};
+                    stepDict['originAddress'] = originAddress;
+                    stepDict['destionationAddress'] = destionationAddress;
+
+                    // Public variable (can be used in any transmit mode)
+                    // Distance
+                    stepDistance = data.distance;
+                    // Google estimated duration
+                    googleDuration = data.duration;
+
+                    // Travel mode
+                    if (data.travel_mode == "WALKING") {
+                        // Walking mode
+                        stepDict['travelMode'] = "WALKING";
+                        stepDict['distance'] = stepDistance;
+                        stepDict['googleDuration'] = googleDuration;
+                    } else {
+                        // public variable of Tram and Bus mode
+                        // Google arrival time and duration estimation
+                        var googleDepartTime = {};
+                        googleDepartTime['text'] = data.transit.arrival_time.text; // When the bus comes = when customer departs
+                        googleDepartTime['value'] = data.transit.arrival_time.value; //value is a date object
+                        // Line name
+                        lineName = data.transit.line.name;
+
+                        if (data.transit.line.vehicle.type == "TRAM") {
+                            // Tram (luas) mode
+                            stepDict['travelMode'] = "TRAM";
+                            stepDict['lineName'] = lineName;
+                            stepDict['distance'] = stepDistance;
+                            stepDict['startStop'] = data.transit.departure_stop.name; // no stop id only name for tram
+                            stepDict['endStop'] = data.transit.arrival_stop.name; // no stop id only name for tram
+                            stepDict['googleDepart'] = googleDepartTime;
+                            stepDict['googleDuration'] = googleDuration;
+                        } else {
+                            // Bus mode
+                            travelMode = "BUS";
+                            stepDict['lineName'] = lineName;
+                            stepDict['distance'] = stepDistance;
+                            stepDict['startStop'] = {
+                                // split the origin string like Westmoreland Street, stop 317
+                                // Warning: Some stop may not return a stop with stop id
+                                // Both name and id keys matching is recommended
+                                'name': data.transit.departure_stop.name.split(',')[0],
+                                'id': data.transit.departure_stop.name.split('stop ')[1]
+                            };
+                            stepDict['endStop'] = {
+                                'name': data.transit.arrival_stop.name.split(',')[0],
+                                'id': data.transit.arrival_stop.name.split('stop ')[1]
+                            };
+                            stepDict['googleDepart'] = googleDepartTime;
+                            stepDict['googleDuration'] = googleDuration;
+                        }
+                    }
+                    // Push dict into given list
+                    allSteps.push(stepDict);
+                })
+                // check the step list
+                // console.log(allSteps);
+                // Jsonify the list
+                JSONallSteps = JSON.stringify(allSteps);
+            } else {
+                // Alert the wrong input
+                window.alert("It seems something is wrong. Please check the input location and time. (Autocomplete is recommended).");
+            }
+        }
+    );
 }
 
 
