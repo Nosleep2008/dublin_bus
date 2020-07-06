@@ -36,15 +36,15 @@ def route(request):
     # For the first step the last step end time is the depart time
     lastStepEndTime = departTime
     stepsResult = []
+    print(lastStepEndTime)
     for i, step in enumerate(steps):
-        print(step)
         travelMode = step['travelMode']
         stepResultDict = {}
         # Step by walking
         if travelMode == 'WALKING':
             totalWalkingTime += step['googleDuration']['value']
             totalWalkingDistance += step['distance']['value']
-            lastStepEndTime += totalWalkingTime
+            lastStepEndTime += step['googleDuration']['value']
             stepResultDict = {'travelMode': 'WALKING'}
 
         # Step by tram(LUAS)

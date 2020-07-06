@@ -175,8 +175,8 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer) {
                         // public variable of Tram and Bus mode
                         // Google arrival time and duration estimation
                         var googleDepartTime = {};
-                        googleDepartTime['text'] = data.transit.arrival_time.text; // When the bus comes = when customer departs
-                        googleDepartTime['value'] = data.transit.arrival_time.value; //value is a date object
+                        googleDepartTime['text'] = data.transit.departure_time.text; // When the bus comes = when customer departs
+                        googleDepartTime['value'] = data.transit.departure_time.value; //value is a date object
                         // Line name
                         lineName = data.transit.line.short_name;
 
