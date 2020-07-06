@@ -51,11 +51,33 @@ function init() {
         // Handle Asynchronous problem
         setTimeout(function () {
             console.log(JSONallSteps);
-        },1000);
+            // AJAX send the POST request and receive the response from Django
+            $.ajax({
+                type: 'POST', // POST request
+                url: "/route/", // Sends post request to the url '/route', which calls a function in views.py
+
+                // Send the formatted JSON file to Django
+                data: {
+                    'csrfmiddlewaretoken': "{{ csrf_token }}",
+                    'stepsInfo': JSONallSteps
+                },
+
+                // Query settings
+                processData: false, // tell jQuery not to process the data
+                contentType: false, // tell jQuery not to set contentType
+
+                // Get response from Django
+                success: function (response) {
+                    console.log('success');
+                    console.log(response);
+                },
+            });
+        }, 1000);
+
+        return false; // Set false to prevent the form being submitted again
 
     });
 }
-
 
 function calculateAndDisplayRoute(directionsService, directionsRenderer) {
     // Get locations of start and end from input box
@@ -63,18 +85,17 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer) {
     var end = document.getElementById('end_location').value;
     // It is a date object
     var depart_time = $('#datetime_picker').datetimepicker('getDate');
-    directionsService.route(
-        {
-            origin: start,
-            destination: end,
-            // default travelMode is transit
-            travelMode: "TRANSIT",
-            transitOptions: {
-                // Set the depart time
-                departureTime: depart_time,
-            },
+    var request = {
+        origin: start,
+        destination: end,
+        // default travelMode is transit
+        travelMode: "TRANSIT",
+        transitOptions: {
+            // Set the depart time
+            departureTime: depart_time,
         },
-        function (response, status) {
+    };
+    directionsService.route(request, function (response, status) {
             if (status === "OK") {
                 // Render and display the route on the map
                 directionsRenderer.setDirections(response);
