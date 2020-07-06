@@ -20,7 +20,8 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('index/', views.index),
+    path('', views.index),
     # Calculate the time estimated by trained model and send back to front end
     # Call the function named route() in views.py
-    path('route/', views.route)
+    path('route/', views.route),
 ]

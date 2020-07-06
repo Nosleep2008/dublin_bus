@@ -59,17 +59,15 @@ function init() {
                 // Send the formatted JSON file to Django
                 data: {
                     'csrfmiddlewaretoken': "{{ csrf_token }}",
-                    'stepsInfo': JSONallSteps
+                    'routeInfo': JSONallSteps
                 },
 
-                // Query settings
-                processData: false, // tell jQuery not to process the data
-                contentType: false, // tell jQuery not to set contentType
 
                 // Get response from Django
                 success: function (response) {
                     console.log('success');
                     console.log(response);
+                    estimateResultTable(response);
                 },
             });
         }, 1000);
@@ -77,6 +75,34 @@ function init() {
         return false; // Set false to prevent the form being submitted again
 
     });
+}
+
+function estimateResultTable(response) {
+    response = response[0];
+    var str = "";
+    str += "<p> Walking Distance: " + response['walkingDistance'] + " m</p>";
+    str += "<p> Total Walking Time: " + response['walkingTime'] + " s</p>";
+    str += "<p> Total TransitTime: " + response['transitTime'] + " s</p>";
+    str += "<p> Total Estimate Waiting Time: " + response['totalEstimateWaitingTime'] + " s</p>";
+    str += "<table class=\"table\">" +
+        "<caption>Transit Info</caption>\n" +
+        "<thead>" +
+        "<tr>" +
+        "<th>Route Name</th>" +
+        "<th>Estimated Arrival Time</th>" +
+        "<th>Estimated Waiting Time</th>"
+    "</tr>" +
+    "</thead>" + "<tbody>";
+    response['stepsInfo'].forEach(function (data, index) {
+        if (data['travelMode'] == "BUS" || data['travelMode'] == "TRAM") {
+            str += "<tr>";
+            str += "<td>" + data['routeName'] + "</td><td>" + data['transitArrivalTime'] + "</td><td>" + data['estimateWaitingTime'] + "</td>";
+            str += "</tr>";
+        }
+    })
+    str += "</tbody></table>";
+    $("#detailResult").html(str);
+
 }
 
 function calculateAndDisplayRoute(directionsService, directionsRenderer) {
@@ -100,21 +126,30 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer) {
                 // Render and display the route on the map
                 directionsRenderer.setDirections(response);
 
+                // Handle the textual display of directions as a series of steps
+                directionsRenderer.setPanel(document.getElementById('directionsPanel'));
+
                 // Check the response
-                // console.log(response);
+                console.log(response);
                 // Origin and destination address
                 originAddress = response.request.destination.query;
-                destionationAddress = response.request.destination.query;
+                destinationAddress = response.request.destination.query;
                 // console.log(originAddress);
 
                 // Pick the first (best) route from the given request
                 bestRoute = response.routes[0];
-                // The transmit steps in the bestRoute
+                // The transit steps in the bestRoute
                 bestRoute = bestRoute.legs[0];
 
                 // The steps number of whole route
                 transitStep = bestRoute.steps
                 stepNum = transitStep.length;
+
+                // Initialise the dictionary and assign the origin and destination
+                var routeDict = {};
+                routeDict['departTime'] = response.request.transitOptions.departureTime;
+                routeDict['originAddress'] = originAddress;
+                routeDict['destinationAddress'] = destinationAddress;
 
                 // Initialise the list
                 var allSteps = [];
@@ -123,10 +158,8 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer) {
                 transitStep.forEach(function (data, index) {
                     // Initialise the dictionary stored each step info
                     var stepDict = {};
-                    stepDict['originAddress'] = originAddress;
-                    stepDict['destionationAddress'] = destionationAddress;
 
-                    // Public variable (can be used in any transmit mode)
+                    // Public variable (can be used in any transit mode)
                     // Distance
                     stepDistance = data.distance;
                     // Google estimated duration
@@ -145,7 +178,7 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer) {
                         googleDepartTime['text'] = data.transit.arrival_time.text; // When the bus comes = when customer departs
                         googleDepartTime['value'] = data.transit.arrival_time.value; //value is a date object
                         // Line name
-                        lineName = data.transit.line.name;
+                        lineName = data.transit.line.short_name;
 
                         if (data.transit.line.vehicle.type == "TRAM") {
                             // Tram (luas) mode
@@ -158,7 +191,7 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer) {
                             stepDict['googleDuration'] = googleDuration;
                         } else {
                             // Bus mode
-                            travelMode = "BUS";
+                            stepDict['travelMode'] = "BUS";
                             stepDict['lineName'] = lineName;
                             stepDict['distance'] = stepDistance;
                             stepDict['startStop'] = {
@@ -181,8 +214,9 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer) {
                 })
                 // check the step list
                 // console.log(allSteps);
+                routeDict['steps'] = allSteps;
                 // Jsonify the list
-                JSONallSteps = JSON.stringify(allSteps);
+                JSONallSteps = JSON.stringify(routeDict);
             } else {
                 // Alert the wrong input
                 window.alert("It seems something is wrong. Please check the input location and time. (Autocomplete is recommended).");

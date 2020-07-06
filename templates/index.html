@@ -143,10 +143,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <!-- banner-bottom -->
 <div class="banner-bottom">
     <div class="container">
-        <h3>Welcome To Our Travel Planner !</h3>
+        <h1>Welcome To Our Travel Planner !</h1>
 
-        <!-- //function-top -->
-        <div class="banner-bottom-grids">
+        <!-- //function-top(temporarily hidden) -->
+        <div style="display: none;" class="banner-bottom-grids">
             <div class="col-md-6 banner-bottom-grid">
                 <div class="col-xs-8 banner-bottom-grid-left">
                     <h4>totam rem aperiam, eaque</h4>
@@ -203,7 +203,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 -webkit-appearance: searchfield-cancel-button;
             }
         </style>
-
+        <!-- //searching box-->
         <form>
             <div class="form-group">
                 <label for="start_location">Start</label>
@@ -227,8 +227,14 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
         <!-- //map-top -->
         <div class="banner-bottom-grids">
+            <div style="float:left;width:70%;height:100%">
+                <div id="map"></div>
+                <div id="detailResult"></div>
+            </div>
+            <div style="float:right;width:30%;height:100%">
+                <div id="directionsPanel"></div>
+            </div>
 
-            <div id="map"></div>
 
 
             <div class="clearfix"></div>
