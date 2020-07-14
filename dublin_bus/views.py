@@ -1,10 +1,13 @@
 import json
 from datetime import datetime
 
-from django.http import HttpResponse
-from django.http import JsonResponse
-from django.shortcuts import render
+from django.contrib.auth import authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib import auth
 
 
 def index(request):
@@ -101,3 +104,46 @@ def route(request):
                'stepsInfo': stepsResult}]
     # Return the response as a dictionary to AJAX
     return JsonResponse(result, safe=False)
+
+
+def login(request):
+    if request.method == "GET":
+        context = {'previous_page': request.GET.get('from_page')}
+        return render(request, 'login.html', context)
+    else:
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            auth.login(request, user)
+            return redirect('/')
+        else:
+            return HttpResponse('Account name or password is incorrect')
+            # return render(request, 'error.html', {'message': 'Account name or password is incorrect.'})
+
+
+
+def register(request):
+    if request.method == "GET":
+        context = {'previous_page': request.GET.get('from_page')}
+        return render(request, 'register.html', context)
+    else:
+        try:
+            username = request.POST['username']
+            password = request.POST['password']
+            # Justify the user exist or not
+            if User.objects.filter(username=username).exists():
+                context = {'register_info': True, 'previous_page': request.GET.get('from_page')}
+                return render(request, 'register.html', context)
+            else:
+                user = User.objects.create_user(username=username, password=password)
+                user.save()
+                return HttpResponseRedirect(request.GET.get('from_page'))
+        except:
+            return HttpResponse('Exception in registration, please try again.')
+
+
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect(request.GET.get('from_page'))
