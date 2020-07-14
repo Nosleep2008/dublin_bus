@@ -24,4 +24,7 @@ urlpatterns = [
     # Calculate the time estimated by trained model and send back to front end
     # Call the function named route() in views.py
     path('route/', views.route),
+    path('login/', views.login),
+    path('logout/', views.logout),
+    path('register/', views.register)
 ]
