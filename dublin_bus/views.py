@@ -42,6 +42,9 @@ def route(request):
     print(lastStepEndTime)
     for i, step in enumerate(steps):
         travelMode = step['travelMode']
+        startStop = step['startStop']
+        endStop = step['endStop']
+
         stepResultDict = {}
         # Step by walking
         if travelMode == 'WALKING':
@@ -76,6 +79,8 @@ def route(request):
         if travelMode == 'BUS':
             routeName = step['lineName']
             passengerArrivalTime = lastStepEndTime
+            startStopId = startStop['id']
+            endStopId = endStop['id']
             # Use the depart time estimated by google maps api as transitArrivalTime
             transitArrivalTime = int(
                 datetime.timestamp(
