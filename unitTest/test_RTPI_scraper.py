@@ -4,6 +4,7 @@ from dublin_bus.scrapers import RTPI_scraper
 def test_get_rtpi_1():
     """Test the function with true stop id"""
     test_result = RTPI_scraper.getRTPI(4728)
+    print(test_result)
     assert test_result != None
 
 def test_get_rtpi_2():
