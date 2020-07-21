@@ -79,6 +79,6 @@ def prediction(routeName, passengerArrivalTime, stopId):
     arrival_time = model.predict(df)
     return arrival_time[0]
 
-
-a = prediction('7', '2020-07-21 10:00:00', '2323')
-print(a)
+if __name__ == '__main__':
+    a = prediction('7', '2020-07-23 10:00:00', '2323')
+    print(a)
