@@ -9,6 +9,8 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth
 
+from dublin_bus import arrival_prediction
+
 
 def index(request):
     return render(request, 'index.html')
@@ -39,11 +41,8 @@ def route(request):
     # For the first step the last step end time is the depart time
     lastStepEndTime = departTime
     stepsResult = []
-    print(lastStepEndTime)
     for i, step in enumerate(steps):
         travelMode = step['travelMode']
-        startStop = step['startStop']
-        endStop = step['endStop']
 
         stepResultDict = {}
         # Step by walking
@@ -77,17 +76,28 @@ def route(request):
 
         # Step by bus
         if travelMode == 'BUS':
+            startStop = step['startStop']
+            endStop = step['endStop']
             routeName = step['lineName']
             passengerArrivalTime = lastStepEndTime
-            startStopId = startStop['id']
-            endStopId = endStop['id']
-            # Use the depart time estimated by google maps api as transitArrivalTime
-            transitArrivalTime = int(
-                datetime.timestamp(
-                    datetime.strptime(
-                        step['googleDepart']['value'], '%Y-%m-%dT%H:%M:%S.%fZ'
-                    )))
-            passengerWaitingTime = transitArrivalTime - passengerArrivalTime
+
+            # If stop id does not exist
+            if startStop.get('id') == None or endStop.get('id') == None:
+                # Use the depart time estimated by google maps api as transitArrivalTime
+                transitArrivalTime = int(
+                    datetime.timestamp(
+                        datetime.strptime(
+                            step['googleDepart']['value'], '%Y-%m-%dT%H:%M:%S.%fZ'
+                        )))
+                passengerWaitingTime = transitArrivalTime - passengerArrivalTime
+            else:
+                # If stop id does exist
+                startStopId = startStop['id']
+                endStopId = endStop['id']
+                passengerArrivalTime_str = str(datetime.fromtimestamp(passengerArrivalTime))
+                passengerWaitingTime = arrival_prediction.prediction(routeName, passengerArrivalTime_str, startStopId)
+                transitArrivalTime = passengerWaitingTime + passengerArrivalTime
+
             stepResultDict = {'travelMode': 'BUS',
                               'routeName': routeName,
                               'transitArrivalTime': transitArrivalTime,
@@ -126,7 +136,6 @@ def login(request):
         else:
             return HttpResponse('Account name or password is incorrect')
             # return render(request, 'error.html', {'message': 'Account name or password is incorrect.'})
-
 
 
 def register(request):
