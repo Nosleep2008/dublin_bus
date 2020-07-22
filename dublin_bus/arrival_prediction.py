@@ -1,6 +1,7 @@
 import joblib
 import pandas as pd
 import requests
+from datetime import datetime
 
 def getOneCall(UnixTime):
     url = 'https://api.openweathermap.org/data/2.5/onecall?lat=53.3477767&lon=-6.2676788&appid=dbb2b9eb4f9424b9c2c168ad52c077d9'
@@ -9,18 +10,20 @@ def getOneCall(UnixTime):
     result = {}
     Hour0Time = int(data['hourly'][0]['dt'])
     Hour48Time = int(data['hourly'][47]['dt'])
+    print(UnixTime,Hour0Time,Hour48Time)
     if int(UnixTime) < Hour0Time:
         return result
     elif int(UnixTime) > Hour48Time:
-        if int(UnixTime) > int(data['hourly'][7]['dt']):
+        print(data['daily'][7]['dt'])
+        if int(UnixTime) > int(data['daily'][7]['dt']):
             return result
         day = (int(UnixTime) - int(Hour0Time)) / (3600 * 24) + 2
         temp = data['daily'][int(day)]['temp']['day']
-        feels_like = data['hourly'][int(day)]['feels_like']['day']
-        wind_speed = data['hourly'][int(day)]['wind_speed']
-        wind_deg = data['hourly'][int(day)]['wind_deg']
-        clouds_all = data['hourly'][int(day)]['clouds']
-        weather_main = data['hourly'][int(day)]['weather'][0]['main']
+        feels_like = data['daily'][int(day)]['feels_like']['day']
+        wind_speed = data['daily'][int(day)]['wind_speed']
+        wind_deg = data['daily'][int(day)]['wind_deg']
+        clouds_all = data['daily'][int(day)]['clouds']
+        weather_main = data['daily'][int(day)]['weather'][0]['main']
     else:
         hour = (int(UnixTime) - int(Hour0Time)) / 3600
         temp = data['hourly'][int(hour)]['temp']
@@ -53,7 +56,8 @@ def prediction(routeName, passengerArrivalTime, stopId):
         'float64')
     df[['wind_deg', 'clouds_all']] = df[['wind_deg', 'clouds_all']].astype('int64')
     #######################
-    unixTime = time.value // 10 ** 9
+    unixTime = datetime.timestamp(time)
+    #print(datetime.fromtimestamp(unixTime))
     time = pd.Series(time)
     hour = (time.dt.minute/60)[0] + time.dt.hour[0]
     month = time.dt.month[0]
@@ -62,6 +66,8 @@ def prediction(routeName, passengerArrivalTime, stopId):
     stop = stopId
     ############
     data = getOneCall(unixTime)
+    if data == {}:
+        return "input date invalid!"
     model = joblib.load(route)
 
     df[['weather_main_' + data['weather_main']]] = 1
@@ -77,8 +83,12 @@ def prediction(routeName, passengerArrivalTime, stopId):
     #print(df)
     ###############
     arrival_time = model.predict(df)
-    return arrival_time[0]
+    unixTime = unixTime + float(arrival_time[0])
+    print(float(arrival_time[0]))
+    readableTime = datetime.fromtimestamp(unixTime)
+    return str(readableTime)[0:19]
 
-if __name__ == '__main__':
-    a = prediction('7', '2020-07-23 10:00:00', '2323')
-    print(a)
+
+a = prediction('1', '2020-07-23 21:54:10', '2323')
+print(a)
+
