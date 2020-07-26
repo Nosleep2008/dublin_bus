@@ -45,9 +45,9 @@ def prediction(routeName, passengerArrivalTime, stopId):
     """routeName is string
     passengerArrivalTime is date object
     stopId is string"""
-    route = 'model_files/' + str(routeName) + '.pkl'
+    route = 'dublin_bus/model_files/' + str(routeName) + '.pkl'
     time = pd.to_datetime(passengerArrivalTime)
-    df = pd.read_csv('model_files/one_row.csv')
+    df = pd.read_csv('dublin_bus/model_files/one_row.csv')
     save = ['temp', 'feels_like', 'wind_speed', 'wind_deg', 'clouds_all', 'Hour']
     df[save] = df[save].astype('object')
     uint8 = df.select_dtypes(include=['int64']).columns

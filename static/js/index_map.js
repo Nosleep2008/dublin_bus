@@ -1,4 +1,7 @@
 // Initialize and add the map
+
+
+
 function init() {
     // The location of the centre of Dublin
     var dublin = {lat: 53.3479538, lng: -6.2708115};
@@ -77,9 +80,45 @@ function init() {
     });
 }
 
+
+
+
+function drawChart() {
+        a = parseInt(window.a)
+        b = parseInt(window.b)
+        c = parseInt(window.c)
+        google.load('visualization', '1.0', {'packages':['corechart']});
+        var data = google.visualization.arrayToDataTable([
+          ['Duration', 'Time'],
+          ['walkingTime',     a],
+          ['transitTime',      b],
+          ['totalEstimateWaitingTime',  c]
+        ]);
+
+        var options = {
+          title: 'Percentage Of Travel Time'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        chart.draw(data, options);
+}
+
+
+
+
+
+
 function estimateResultTable(response) {
     response = response[0];
-    var str = "";
+    window.a = response['walkingTime'];
+    window.b = response['transitTime'];
+    window.c = response['totalEstimateWaitingTime'];
+    var str = "<script type = 'text/javascript'>\n" +
+        "      google.charts.load('current', {'packages':['corechart']});\n" +
+        "      google.charts.setOnLoadCallback(drawChart);\n" +
+        "      </script>";
+
     str += "<p> Walking Distance: " + response['walkingDistance'] + " m</p>";
     str += "<p> Total Walking Time: " + response['walkingTime'] + " s</p>";
     str += "<p> Total TransitTime: " + response['transitTime'] + " s</p>";

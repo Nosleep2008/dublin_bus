@@ -14,12 +14,19 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     function hideURLbar() {
         window.scrollTo(0, 1);
     } </script>
+
+
+
+
+
     <!-- //for-mobile-apps -->
     <link href="../static/css/bootstrap.css" rel="stylesheet" type="text/css" media="all"/>
     <link href="../static/css/style.css" rel="stylesheet" type="text/css" media="all"/>
     <!-- js -->
     <script src="../static/js/jquery-1.11.1.min.js"></script>
+    <script src="../static/js/loader.js"></script>
     <script src="../static/js/index_map.js"></script>
+
     <!-- //js -->
     <!-- for-datetime-picker-->
     <script src="../static/js/bootstrap-datetimepicker.js"></script>
@@ -46,6 +53,61 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
           rel='stylesheet' type='text/css'>
 
 
+    <style>
+        body.sideMenu{
+        margin:0;
+        -webkit-transform:none;
+        transform:none;
+        }
+#sideToggle{
+display:none;
+}
+#sideToggle:checked + aside{
+right:0;
+ }
+#sideToggle:checked ~ #wrap{
+padding-right:10px;
+ }
+aside{
+position:absolute; top:22%; bottom:10%; right:-20%;
+width:20%;
+height: 80%;
+background:darkgray;
+transition:0.2s ease-out;
+-webkit-transition:0.2s ease-out;
+z-index:100;
+ }
+#wrap{
+     margin-left:0px; padding:0px 0px 0px 0px;
+      transition:0.25s ease-out;
+      -webkit-transition:0.25s ease-out; }
+#wrap > label{
+}
+#wrap > label{
+      background:#005e99;
+      border-radius:50px;
+      color: #FFF;
+
+      cursor: pointer;
+      display: block;
+      font-family: Bahnschrift;
+      font-size: 25px;
+      font-weight: bold;
+      width: 80px;
+      height: 30px;
+      line-height: 35px;
+      text-align: center;
+    }
+#wrap > label:hover{
+background:#000;
+}
+h2{
+    color: #FFF;
+}
+    </style>
+
+
+
 </head>
 
 <body>
@@ -53,7 +115,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <div class="header">
 
     <div class="logo">
-        <a href="index.html">Dublin Bus<span>a great planner</span></a>
+        <a href="/">Dublin Bus<span>a great planner</span></a>
     </div>
     <div class="logo-right">
         <ul>
@@ -80,6 +142,16 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                         <li><a href="gallery.html">Page D</a></li>
                         <li><a href="contact.html">Page E</a></li>
                     </ul>
+                    <!-- //login window-->
+                     <div style="text-align: right">
+                        {% if request.user.is_authenticated %}
+                            <div style="font-style: italic; font-family: 'Josefin Sans', sans-serif">Welcome：{{ user }}</div> <a class="btn btn-primary btn-sm" role="button" href="/logout/?from_page={{ request.get_full_path }}">Logout</a>
+                        {% else %}
+                        <div style="font-style: italic; font-family: 'Josefin Sans', sans-serif">Welcome: Visitor   <a class="btn btn-primary btn-sm" role="button" href="/login/?from_page={{ request.get_full_path }}">Login</a>
+                        <a class="btn btn-success btn-sm" role="button" href="/register/?from_page={{ request.get_full_path }}">Register</a>
+                        {% endif %}
+                     </div>
+                    <!-- //login window-->
                 </nav>
             </div><!-- /.navbar-collapse -->
         </nav>
@@ -88,18 +160,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <!-- //header -->
 <!-- body -->
 <div>
-    <div class="container">
-        <h1>Welcome To Our Travel Planner !</h1>
-        <!-- //login window-->
-        <div style="text-align: right">
-            {% if request.user.is_authenticated %}
-            <h3><b>Welcome：{{ user }}  </b><a class="btn btn-primary " role="button" href="/logout/?from_page={{ request.get_full_path }}">Logout</a></h3>
-            {% else %}
-            <h3>Welcome: Visitor   <a class="btn btn-primary" role="button" href="/login/?from_page={{ request.get_full_path }}">Login</a>
-                <a class="btn btn-success" role="button" href="/register/?from_page={{ request.get_full_path }}">Register</a></h3>
-            {% endif %}
-        </div>
-        <!-- //login window-->
+    <div class="container" style="margin-bottom: 15%; margin-top: 1% ; margin-left: 5%">
+        <!--<h1>Welcome To Our Travel Planner !</h1>   -->
 
         {% block login %}
         {% endblock %}
@@ -113,7 +175,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             }
         </style>
         <!-- //searching box-->
-        <form>
+        <form style="width: 45%;float: left; margin-right: 1%">
             <div class="form-group">
                 <label for="start_location">Start</label>
                 <input id="start_location" class="form-control" type="search" placeholder="From:"/>
@@ -131,23 +193,38 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                 </div>
             </div>
             <button id="search_sumbit" type="button" class="btn btn-primary">Submit</button>
+            <div id="piechart" style="width: 100%; height: 100%; margin-top: 25%"></div>
         </form>
         <!-- //searching-box-bottom-->
 
         <!-- //map-top -->
         <div class="banner-bottom-grids">
-            <div style="float:left;width:70%;height:100%">
+            <div style="float:left; width:50%;height:100%">
                 <div id="map"></div>
-                <div id="detailResult"></div>
+                <div id="detailResult" style="margin-top: 3%"></div>
+                <div id="wrap">
+            <label id='sideMenuControl' for='sideToggle'>More <</label>
             </div>
-            <div style="float:right;width:30%;height:100%">
-                <div id="directionsPanel"></div>
+            </div>
+
+
+
+            <div style="float: right; width:20%;height:100%">
+                <input type='checkbox' id='sideToggle'>
+                <aside>
+                    <div id="directionsPanel"><h3>Google Routes Plan-----></h3></div>
+                </aside>
+
+
             </div>
 
 
             <div class="clearfix"></div>
         </div>
         <!-- //map-bottom -->
+
+
+
 
 
     </div>
