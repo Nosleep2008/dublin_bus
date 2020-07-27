@@ -83,11 +83,11 @@ def prediction(routeName, passengerArrivalTime, stopId):
     #print(df)
     ###############
     arrival_time = model.predict(df)
-    unixTime = unixTime + float(arrival_time[0])
-    print(float(arrival_time[0]))
-    readableTime = datetime.fromtimestamp(unixTime)
-    return str(readableTime)[0:19]
-
+    #unixTime = unixTime + float(arrival_time[0])
+    result_time = int(arrival_time[0])
+    #readableTime = datetime.fromtimestamp(unixTime)
+    #return str(readableTime)[0:19]
+    return result_time
 
 #a = prediction('69X', '2020-07-28 21:54:10', '2323')
 #print(a)
