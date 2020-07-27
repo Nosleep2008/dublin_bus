@@ -45,9 +45,9 @@ def prediction(routeName, passengerArrivalTime, stopId):
     """routeName is string
     passengerArrivalTime is date object
     stopId is string"""
-    route = 'dublin_bus/model_files/' + str(routeName) + '.pkl'
+    route = './model_files/' + str(routeName) + '.pkl'
     time = pd.to_datetime(passengerArrivalTime)
-    df = pd.read_csv('dublin_bus/model_files/one_row.csv')
+    df = pd.read_csv('./model_files/one_row.csv')
     save = ['temp', 'feels_like', 'wind_speed', 'wind_deg', 'clouds_all', 'Hour']
     df[save] = df[save].astype('object')
     uint8 = df.select_dtypes(include=['int64']).columns
@@ -89,6 +89,6 @@ def prediction(routeName, passengerArrivalTime, stopId):
     return str(readableTime)[0:19]
 
 
-a = prediction('1', '2020-07-23 21:54:10', '2323')
-print(a)
+#a = prediction('69X', '2020-07-28 21:54:10', '2323')
+#print(a)
 
