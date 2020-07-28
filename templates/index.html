@@ -16,9 +16,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     } </script>
 
 
-
-
-
     <!-- //for-mobile-apps -->
     <link href="../static/css/bootstrap.css" rel="stylesheet" type="text/css" media="all"/>
     <link href="../static/css/style.css" rel="stylesheet" type="text/css" media="all"/>
@@ -54,58 +51,71 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
 
     <style>
-        body.sideMenu{
-        margin:0;
-        -webkit-transform:none;
-        transform:none;
+        body.sideMenu {
+            margin: 0;
+            -webkit-transform: none;
+            transform: none;
         }
-#sideToggle{
-display:none;
-}
-#sideToggle:checked + aside{
-right:0;
- }
-#sideToggle:checked ~ #wrap{
-padding-right:10px;
- }
-aside{
-position:fixed; top:22%; bottom:10%; right:-20%;
-width:20%;
-height: 80%;
-background:darkgray;
-transition:0.2s ease-out;
--webkit-transition:0.2s ease-out;
-z-index:100;
- }
-#wrap{
-     margin-left:0px; padding:0px 0px 0px 0px;
-      transition:0.25s ease-out;
-      -webkit-transition:0.25s ease-out; }
-#wrap > label{
-}
-#wrap > label{
-      background:#005e99;
-      border-radius:50px;
-      color: #FFF;
 
-      cursor: pointer;
-      display: block;
-      font-family: Bahnschrift;
-      font-size: 25px;
-      font-weight: bold;
-      width: 80px;
-      height: 30px;
-      line-height: 35px;
-      text-align: center;
-    }
-#wrap > label:hover{
-background:#000;
-}
-h2{
-    color: #FFF;
-}
+        #sideToggle {
+            display: none;
+        }
+
+        #sideToggle:checked + aside {
+            right: 0;
+        }
+
+        #sideToggle:checked ~ #wrap {
+            padding-right: 10px;
+        }
+
+        aside {
+            position: fixed;
+            top: 22%;
+            bottom: 10%;
+            right: -20%;
+            width: 20%;
+            height: 80%;
+            background: darkgray;
+            transition: 0.2s ease-out;
+            -webkit-transition: 0.2s ease-out;
+            z-index: 100;
+        }
+
+        #wrap {
+            margin-left: 0px;
+            padding: 0px 0px 0px 0px;
+            transition: 0.25s ease-out;
+            -webkit-transition: 0.25s ease-out;
+        }
+
+        #wrap > label {
+        }
+
+        #wrap > label {
+            background: #005e99;
+            border-radius: 50px;
+            color: #FFF;
+
+            cursor: pointer;
+            display: block;
+            font-family: Bahnschrift;
+            font-size: 25px;
+            font-weight: bold;
+            width: 80px;
+            height: 30px;
+            line-height: 35px;
+            text-align: center;
+        }
+
+        #wrap > label:hover {
+            background: #000;
+        }
+
+        h2 {
+            color: #FFF;
+        }
     </style>
-
 
 
 </head>
@@ -136,22 +146,27 @@ h2{
                 <nav class="cl-effect-1">
                     <ul class="nav navbar-nav">
                         <li class="active"><a href="index.html">Home</a></li>
-                        <li><a href="about.html">Page A</a></li>
-                        <li><a href="codes.html">Page B</a></li>
-                        <li><a href="services.html">Page C</a></li>
-                        <li><a href="gallery.html">Page D</a></li>
-                        <li><a href="contact.html">Page E</a></li>
+                        {#                        <li><a href="about.html">Page A</a></li>#}
+                        {#                        <li><a href="codes.html">Page B</a></li>#}
+                        {#                        <li><a href="services.html">Page C</a></li>#}
+                        {#                        <li><a href="gallery.html">Page D</a></li>#}
+                        {#                        <li><a href="contact.html">Page E</a></li>#}
                     </ul>
                     <!-- //login window-->
-                     <div style="text-align: right">
+                    <div style="text-align: right">
                         {% if request.user.is_authenticated %}
-                            <div style="font-style: italic; font-family: 'Josefin Sans', sans-serif">Welcome：{{ user }}</div> <a class="btn btn-primary btn-sm" role="button" href="/logout/?from_page={{ request.get_full_path }}">Logout</a>
+                            <div style="font-style: italic; font-family: 'Josefin Sans', sans-serif">
+                                Welcome：{{ user }}</div><a class="btn btn-primary btn-sm" role="button"
+                                                           href="/logout/?from_page={{ request.get_full_path }}">Logout</a>
                         {% else %}
-                        <div style="font-style: italic; font-family: 'Josefin Sans', sans-serif">Welcome: Visitor   <a class="btn btn-primary btn-sm" role="button" href="/login/?from_page={{ request.get_full_path }}">Login</a>
-                        <a class="btn btn-success btn-sm" role="button" href="/register/?from_page={{ request.get_full_path }}">Register</a>
+                            <div style="font-style: italic; font-family: 'Josefin Sans', sans-serif">Welcome: Visitor
+                            <a class="btn btn-primary btn-sm" role="button"
+                               href="/login/?from_page={{ request.get_full_path }}">Login</a>
+                            <a class="btn btn-success btn-sm" role="button"
+                               href="/register/?from_page={{ request.get_full_path }}">Register</a>
                         {% endif %}
-                     </div>
-                    <!-- //login window-->
+                        </div>
+                        <!-- //login window-->
                 </nav>
             </div><!-- /.navbar-collapse -->
         </nav>
@@ -175,26 +190,37 @@ h2{
             }
         </style>
         <!-- //searching box-->
-        <form style="width: 45%;float: left; margin-right: 1%">
-            <div class="form-group">
-                <label for="start_location">Start</label>
-                <input id="start_location" class="form-control" type="search" placeholder="From:"/>
-            </div>
-            <div class="form-group">
-                <label for="end_location">End</label>
-                <input id="end_location" class="form-control" type="search" placeholder="To:"/>
-            </div>
-            <div class="form-group">
-                <label for="datetime_picker">Depart Time:</label>
-                <div class="input-group date" id="datetime_picker">
-                    <input size="16" type="text" value="" readonly class="form-control">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-remove"></i></span>
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+        <div style="width: 45%;float: left; margin-right: 1%">
+            <form>
+                <div class="form-group">
+                    <label for="start_location">Start</label>
+                    <input id="start_location" class="form-control" type="search" placeholder="From:"/>
                 </div>
-            </div>
-            <button id="search_sumbit" type="button" class="btn btn-primary">Submit</button>
-            <div id="piechart" style="width: 100%; height: 100%; margin-top: 25%"></div>
-        </form>
+                <div class="form-group">
+                    <label for="end_location">End</label>
+                    <input id="end_location" class="form-control" type="search" placeholder="To:"/>
+                </div>
+                <div class="form-group">
+                    <label for="datetime_picker">Depart Time:</label>
+                    <div class="input-group date" id="datetime_picker">
+                        <input size="16" type="text" value="" readonly class="form-control">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-remove"></i></span>
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                    </div>
+                </div>
+                <button id="search_sumbit" type="button" class="btn btn-primary">Submit</button>
+                {% if request.user.is_authenticated %}
+                    <input type="hidden" id="userId" value={{ user }}>
+                    <input value="Favourite" type="button" onclick="favourite()" class="btn btn-primary">
+                    <input value="Show Favourite" type="button" onclick="showFavourite()" class="btn btn-primary">
+                {% endif %}
+                <div id="piechart" style="width: 100%; height: 100%; margin-top: 25%"></div>
+            </form>
+            {% if request.user.is_authenticated %}
+                <input type="hidden" id="userId" value={{ user }}>
+                <div id="favouriteRoutes"></div>
+            {% endif %}
+        </div>
         <!-- //searching-box-bottom-->
 
         <!-- //map-top -->
@@ -203,16 +229,15 @@ h2{
                 <div id="map"></div>
                 <div id="detailResult" style="margin-top: 3%"></div>
                 <div id="wrap">
-            <label id='sideMenuControl' for='sideToggle'>More <</label>
+                    <label id='sideMenuControl' for='sideToggle'>More</label>
+                </div>
             </div>
-            </div>
-
 
 
             <div style="float: right; width:20%;height:100%">
                 <input type='checkbox' id='sideToggle'>
                 <aside>
-                    <div id="directionsPanel"><h3>Google Routes Plan-----></h3></div>
+                    <div id="directionsPanel"><h3>Google Routes Plan</h3></div>
                 </aside>
 
 
@@ -222,9 +247,6 @@ h2{
             <div class="clearfix"></div>
         </div>
         <!-- //map-bottom -->
-
-
-
 
 
     </div>
