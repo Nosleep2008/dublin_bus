@@ -1,7 +1,6 @@
 // Initialize and add the map
 
 
-
 function init() {
     // The location of the centre of Dublin
     var dublin = {lat: 53.3479538, lng: -6.2708115};
@@ -78,36 +77,139 @@ function init() {
         return false; // Set false to prevent the form being submitted again
 
     });
+
 }
 
+function favourite() {
+    var username = document.getElementById("userId").value;
+    var start = document.getElementById('start_location').value;
+    var end = document.getElementById('end_location').value;
 
+    $.ajax({
+        type: 'POST',
+        url: "/favourite/",
+        data: {
+            'csrfmiddlewaretoken': "{{ csrf_token }}",
+            'username': username,
+            'start': start,
+            'end': end
+        },
+        success: function (response) {
+            console.log('success');
+            console.log(response);
+            FavouriteTable(response);
+        },
+    });
+}
+
+function showFavourite() {
+    var username = document.getElementById("userId").value;
+
+    $.ajax({
+        type: 'POST',
+        url: "/showFavourite/",
+        data: {
+            'csrfmiddlewaretoken': "{{ csrf_token }}",
+            'username': username,
+        },
+        success: function (response) {
+            FavouriteTable(response);
+        },
+    });
+}
+
+function favourite_select(index) {
+    var start_str = 'start' + index.toString();
+    var end_str = 'end' + index.toString();
+
+    var start = document.getElementById(start_str).innerText;
+    var end = document.getElementById(end_str).innerText;
+
+
+    document.getElementById('start_location').value = start;
+    document.getElementById('end_location').value = end;
+
+
+}
+
+function favourite_delete(index) {
+
+    favourite_select(index);
+
+    var username = document.getElementById("userId").value;
+    var start = document.getElementById('start_location').value;
+    var end = document.getElementById('end_location').value;
+
+    if (start!=null && end!=null){
+        $.ajax({
+        type: 'POST',
+        url: "/deleteFavourite/",
+        data: {
+            'csrfmiddlewaretoken': "{{ csrf_token }}",
+            'username': username,
+            'start': start,
+            'end': end
+        },
+        success: function (response) {
+            console.log('success');
+            console.log(response);
+            FavouriteTable(response);
+        },
+    });
+
+    document.getElementById('start_location').value = "";
+    document.getElementById('end_location').value = "";
+    }
+
+}
 
 
 function drawChart() {
-        a = parseInt(window.a)
-        b = parseInt(window.b)
-        c = parseInt(window.c)
-        google.load('visualization', '1.0', {'packages':['corechart']});
-        var data = google.visualization.arrayToDataTable([
-          ['Duration', 'Time'],
-          ['walkingTime',     a],
-          ['transitTime',      b],
-          ['totalEstimateWaitingTime',  c]
-        ]);
+    a = parseInt(window.a)
+    b = parseInt(window.b)
+    c = parseInt(window.c)
+    google.load('visualization', '1.0', {'packages': ['corechart']});
+    var data = google.visualization.arrayToDataTable([
+        ['Duration', 'Time'],
+        ['walkingTime', a],
+        ['transitTime', b],
+        ['totalEstimateWaitingTime', c]
+    ]);
 
-        var options = {
-          title: 'Percentage Of Travel Time'
-        };
+    var options = {
+        title: 'Percentage Of Travel Time'
+    };
 
-        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+    var chart = new google.visualization.PieChart(document.getElementById('piechart'));
 
-        chart.draw(data, options);
+    chart.draw(data, options);
 }
 
-
-
-
-
+function FavouriteTable(response) {
+    var str = "";
+    str += "<table class=\"table\">" +
+        "<caption>Favourite Route</caption>\n" +
+        "<thead>" +
+        "<tr>" +
+        "<th>ID</th>" +
+        "<th>Origin</th>" +
+        "<th>Destination</th>" +
+        "<th>Select</th>"
+    "</tr>" + "</thead>" + "<tbody>";
+    favourite_routes = response[0]['favourite'];
+    favourite_routes.forEach(function (route, index) {
+        var index_table = index + 1;
+        str += "<tr>";
+        str += "<td>" + index_table + "</td>" +
+            "<td id='start" + index_table + "'>" + route[0] + "</td>" +
+            "<td id='end" + index_table + "'>" + route[1] + "</td>" +
+            "<td><button class=\"btn btn-primary\" onclick=\"favourite_select(" + index_table + ")\">Select</button></td>" +
+            "<td><button class=\"btn btn-primary\" onclick=\"favourite_delete(" + index_table + ")\">Delete</button></td>";
+        str += "</tr>";
+    });
+    str += "</tbody></table>";
+    $("#favouriteRoutes").html(str);
+}
 
 function estimateResultTable(response) {
     response = response[0];

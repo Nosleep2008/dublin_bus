@@ -2,12 +2,12 @@ import json
 from datetime import datetime
 
 from django.contrib.auth import authenticate
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth
+from dublin_bus.models import Favourite
 
 from dublin_bus import arrival_prediction
 
@@ -161,3 +161,46 @@ def register(request):
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect(request.GET.get('from_page'))
+
+@csrf_exempt
+def favourite(request):
+
+    user = request.POST.get('username')
+    origin = request.POST.get('start')
+    destination = request.POST.get('end')
+
+    f = Favourite(username=user, origin=origin, destination=destination)
+    f.save()
+
+    favourite = Favourite.objects.filter(username=user).values_list('origin','destination')
+    favourite = list(favourite)
+    result = [{'favourite': favourite}]
+
+    return JsonResponse(result, safe=False)
+
+
+@csrf_exempt
+def show_favourite(request):
+    user = request.POST.get('username')
+
+    favourite = Favourite.objects.filter(username=user).values_list('origin', 'destination')
+    favourite = list(favourite)
+    result = [{'favourite': favourite}]
+
+    return JsonResponse(result, safe=False)
+
+@csrf_exempt
+def delete_favourite(request):
+
+    user = request.POST.get('username')
+    origin = request.POST.get('start')
+    destination = request.POST.get('end')
+
+    f = Favourite.objects.get(username=user, origin=origin, destination=destination)
+    f.delete()
+
+    favourite = Favourite.objects.filter(username=user).values_list('origin','destination')
+    favourite = list(favourite)
+    result = [{'favourite': favourite}]
+
+    return JsonResponse(result, safe=False)
