@@ -2,6 +2,9 @@
 
 
 function init() {
+    // Get the weather of Dublin City
+    getWeather();
+
     // The location of the centre of Dublin
     var dublin = {lat: 53.3479538, lng: -6.2708115};
     // The map, centered at Uluru
@@ -140,25 +143,25 @@ function favourite_delete(index) {
     var start = document.getElementById('start_location').value;
     var end = document.getElementById('end_location').value;
 
-    if (start!=null && end!=null){
+    if (start != null && end != null) {
         $.ajax({
-        type: 'POST',
-        url: "/deleteFavourite/",
-        data: {
-            'csrfmiddlewaretoken': "{{ csrf_token }}",
-            'username': username,
-            'start': start,
-            'end': end
-        },
-        success: function (response) {
-            console.log('success');
-            console.log(response);
-            FavouriteTable(response);
-        },
-    });
+            type: 'POST',
+            url: "/deleteFavourite/",
+            data: {
+                'csrfmiddlewaretoken': "{{ csrf_token }}",
+                'username': username,
+                'start': start,
+                'end': end
+            },
+            success: function (response) {
+                console.log('success');
+                console.log(response);
+                FavouriteTable(response);
+            },
+        });
 
-    document.getElementById('start_location').value = "";
-    document.getElementById('end_location').value = "";
+        document.getElementById('start_location').value = "";
+        document.getElementById('end_location').value = "";
     }
 
 }
@@ -364,6 +367,25 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer) {
             }
         }
     );
+}
+
+function getWeather() {
+    var cityName = "Dublin"
+    var OPEN_WEATHER_API = "ae1cb5df0561ea9915f81e08ce8299fc"
+    var url = "http://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=" + OPEN_WEATHER_API;
+
+    return fetch(url).then(function (response) {
+        return response.json();
+    }).then(function (infoJson) {
+        var weather_main = infoJson["weather"][0]["main"];
+        var temper = Math.round(infoJson["main"]["temp"] - 273);
+        var icon = "http://openweathermap.org/img/wn/" + infoJson["weather"][0]["icon"] + "@2x.png";
+        // console.log(weather_main, temper, icon);
+        var str="<img src=" + icon + ">" + "<br>";
+        str += "<p>Weather:"+ weather_main +"</p>";
+        str += "<p>Temperature:"+ temper +"°C</p>";
+        $("#show_weather").html(str);
+    })
 }
 
 
