@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+{% if device_type != 'mobile' %}
+<!--  PC devices templates ++++ start -->
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Home</title>
@@ -121,6 +123,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 </head>
 
 <body>
+
+
+
+
 <!-- header -->
 <div class="header">
 
@@ -326,3 +332,207 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
 </body>
 </html>
+<!--  PC devices templates ++++  end -->
+
+
+<!--  Mobile devices templates ++++ start -->
+{% else %}
+    <!DOCTYPE HTML>
+<html>
+<head>
+<title>Home</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link href='http://fonts.googleapis.com/css?family=Monda:400,700' rel='stylesheet' type='text/css'>
+    <link href="../static/css/bootstrap.css" rel="stylesheet" type="text/css" media="all"/>
+    <script src="../static/js/jquery-1.11.1.min.js"></script>
+    <script src="../static/js/bootstrap.js"></script>
+    <script src="../static/js/index_map.js"></script>
+    <script src="../static/js/loader.js"></script>
+
+    <!-- for-datetime-picker-->
+    <script src="../static/js/bootstrap-datetimepicker.js"></script>
+    <link href="../static/css/bootstrap-datetimepicker.css" rel="stylesheet">
+    <link href="../static/css/datetimepicker.css" rel="stylesheet">
+    <!-- //for-datetime-picker-->
+
+    <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:400,100,100italic,300,300italic,400italic,600,600italic,700,700italic'
+          rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic'
+          rel='stylesheet' type='text/css'>
+
+
+
+<link href="../static/mobile_css/style.css" rel="stylesheet" type="text/css" media="all" />
+<script src="../static/mobile_js/jquery.min.js"></script>
+<script src="../static/mobile_js/easyResponsiveTabs.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#horizontalTab').easyResponsiveTabs({
+            type: 'default', //Types: default, vertical, accordion
+            width: 'auto', //auto or any width like 600px
+            fit: true,   // 100% fit in a container
+            closed: 'accordion', // Start closed if in accordion view
+            activate: function(event) { // Callback function if tab is switched
+                var $tab = $(this);
+                var $info = $('#tabInfo');
+                var $name = $('span', $info);
+
+                $name.text($tab.text());
+
+                $info.show();
+            }
+        });
+
+        $('#verticalTab').easyResponsiveTabs({
+            type: 'vertical',
+            width: 'auto',
+            fit: true
+        });
+    });
+</script>
+
+</head>
+<body>
+	        <div id="verticalTab"><!-- start vertical Tabs-->
+	            <ul class="resp-tabs-list">
+	                <li><i class="icon_1"></i></li>
+	                <li><i class="icon_2"></i></li>
+	                <li><i class="icon_3"></i></li>
+	                <li><i class="icon_4"></i></li>
+	                <li><i class="icon_5"></i></li>
+	            </ul>
+	            <div class="resp-tabs-container">
+	                <div class="new_posts">
+						<h3>Dublin Bus Prediction</h3>
+						<div class="vertical_post">
+
+
+                                   <!-- //searching-box-top-->
+
+        <!-- //searching box-->
+        <div style="width: 45%;float: left; margin-right: 1%">
+            <form>
+                <div class="form-group">
+                    <label for="start_location">Start</label>
+                    <input id="start_location" class="form-control" type="search" placeholder="From:"/>
+                </div>
+                <div class="form-group">
+                    <label for="end_location">End</label>
+                    <input id="end_location" class="form-control" type="search" placeholder="To:"/>
+                </div>
+                <div class="form-group">
+                    <label for="datetime_picker">Depart Time:</label>
+                    <div class="input-group date" id="datetime_picker">
+                        <input size="16" type="text" value="" readonly class="form-control">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-remove"></i></span>
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                    </div>
+                </div>
+                <button id="search_sumbit" type="button" class="btn btn-primary">Submit</button>
+                {% if request.user.is_authenticated %}
+                    <input type="hidden" id="userId" value={{ user }}>
+                    <input value="Favourite" type="button" onclick="favourite()" class="btn btn-primary">
+                    <input value="Show Favourite" type="button" onclick="showFavourite()" class="btn btn-primary">
+                {% endif %}
+                <div id="piechart" style="width: 100%; height: 100%; margin-top: 25%"></div>
+            </form>
+            {% if request.user.is_authenticated %}
+                <input type="hidden" id="userId" value={{ user }}>
+                <div id="favouriteRoutes"></div>
+            {% endif %}
+        </div>
+        <!-- //searching-box-bottom-->
+
+        <!-- //map-top -->
+            <div style="float:left; width:50%;height:100%">
+                <div id="map"></div>
+
+            </div>
+
+
+
+
+        <!-- //map-bottom -->
+
+
+
+
+                            <!--
+							<div class="map">
+								<iframe width="100%" height="200" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.co.in/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=Lighthouse+Point,+FL,+United+States&amp;aq=4&amp;oq=light&amp;sll=26.275636,-80.087265&amp;sspn=0.04941,0.104628&amp;ie=UTF8&amp;hq=&amp;hnear=Lighthouse+Point,+Broward,+Florida,+United+States&amp;t=m&amp;z=14&amp;ll=26.275636,-80.087265&amp;output=embed"></iframe><br><small><a href="https://maps.google.co.in/maps?f=q&amp;source=embed&amp;hl=en&amp;geocode=&amp;q=Lighthouse+Point,+FL,+United+States&amp;aq=4&amp;oq=light&amp;sll=26.275636,-80.087265&amp;sspn=0.04941,0.104628&amp;ie=UTF8&amp;hq=&amp;hnear=Lighthouse+Point,+Broward,+Florida,+United+States&amp;t=m&amp;z=14&amp;ll=26.275636,-80.087265"></a></small>
+									<form>
+										<input type="text" value="" />
+										<input type="submit" value="add map"/>
+									</form>
+							</div> -->
+
+	                </div>
+
+                    </div>
+	                <div class="new_posts">
+	                	<h3>Lorem Ipsum text</h3>
+	                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum nibh urna, euismod ut ornare non, volutpat vel tortor. Integer laoreet placerat suscipit. Sed sodales scelerisque commodo. Nam porta cursus lectus. Proin nunc erat, gravida a facilisis quis, ornare id lectus. Proin consectetur nibh quis urna gravida mollis.</p>
+	                </div>
+	                <div class="new_posts">
+	                	<h3>Lorem Ipsum text</h3>
+	                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum nibh urna, euismod ut ornare non, volutpat vel tortor. Integer laoreet placerat suscipit. Sed sodales scelerisque commodo. Nam porta cursus lectus. Proin nunc erat, gravida a facilisis quis, ornare id lectus. Proin consectetur nibh quis urna gravida mollis.</p>
+	                </div>
+	                <div class="new_posts">
+						<div class="rel_posts">
+							<h4>related posts</h4>
+							<div class="rel_post">
+								<div class="rel_post_para">
+									<span><a href="#">Lorem Ipsum is simply dummy text of the printing and ever.</a></span>
+									<p>by <a href="#">Finibus</a></p>
+								</div>
+								<div class="rel_post_check">
+									<a href="#">
+										<label class="checkbox"><input type="checkbox" name="checkbox" checked=""><i> </i></label>
+									</a>
+									<div class="clear"></div>
+								</div>
+								<div class="clear"></div>
+							</div>
+							<div class="rel_post1">
+								<div class="rel_post_para">
+									<span><a href="#">Lorem Ipsum is simply dummy text of the printing and ever.</a></span>
+									<p>by <a href="#">Malorum</a></p>
+								</div>
+								<div class="rel_post_check">
+									<a href="#">
+										<label class="checkbox"><input type="checkbox" name="checkbox" checked=""><i> </i></label>
+									</a>
+									<div class="clear"></div>
+								</div>
+								<div class="clear"></div>
+							</div>
+							<div class="rel_post1">
+								<div class="rel_post_para">
+									<span><a href="#">Lorem Ipsum is simply dummy text of the printing and ever.</a></span>
+									<p>by <a href="#">jacklos</a></p>
+								</div>
+								<div class="rel_post_check">
+									<a href="#">
+										<label class="checkbox"><input type="checkbox" name="checkbox" checked=""><i> </i></label>
+									</a>
+									<div class="clear"></div>
+								</div>
+								<div class="clear"></div>
+							</div>
+						</div>
+	                </div>
+	                <div class="new_posts">
+	                	<h3>Lorem Ipsum text</h3>
+	                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum nibh urna, euismod ut ornare non, volutpat vel tortor. Integer laoreet placerat suscipit. Sed sodales scelerisque commodo. Nam porta cursus lectus. Proin nunc erat, gravida a facilisis quis, ornare id lectus. Proin consectetur nibh quis urna gravida mollis.</p>
+	                </div>
+	            </div>
+	        </div>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoI276ljCuDSuJtwX7hpN5O5wi8P-rsZc&language=en&libraries=places&callback=init">
+</script>
+</body>
+</html>
+{% endif %}
+
+<!--  Mobile devices templates ++++  end -->
