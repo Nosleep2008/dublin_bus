@@ -345,16 +345,16 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <link href='http://fonts.googleapis.com/css?family=Monda:400,700' rel='stylesheet' type='text/css'>
         <link href="../static/css/bootstrap.css" rel="stylesheet" type="text/css" media="all"/>
+
+        <!-- js -->
         <script src="../static/js/jquery-1.11.1.min.js"></script>
         <script src="../static/js/bootstrap.js"></script>
-        <script src="../static/js/index_map.js"></script>
+
         <script src="../static/js/loader.js"></script>
 
-        <!-- for-datetime-picker-->
-        <script src="../static/js/bootstrap-datetimepicker.js"></script>
-        <link href="../static/css/bootstrap-datetimepicker.css" rel="stylesheet">
-        <link href="../static/css/datetimepicker.css" rel="stylesheet">
-        <!-- //for-datetime-picker-->
+
+        <!-- //js -->
+
 
         <link href='http://fonts.googleapis.com/css?family=Josefin+Sans:400,100,100italic,300,300italic,400italic,600,600italic,700,700italic'
               rel='stylesheet' type='text/css'>
@@ -403,14 +403,14 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
         </ul>
         <div class="resp-tabs-container">
             <div class="new_posts">
-                <h3>Dublin Bus Prediction</h3>
+                <h3>Dublin Bus</h3>
                 <div class="vertical_post">
 
 
                     <!-- //searching-box-top-->
 
                     <!-- //searching box-->
-                    <div style="width: 45%;float: left; margin-right: 1%">
+                    <div style="width: 50%;float: left; margin-right: 1%;margin-left: -9%">
                         <form>
                             <div class="form-group">
                                 <label for="start_location">Start</label>
@@ -445,11 +445,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     <!-- //searching-box-bottom-->
 
                     <!-- //map-top -->
-                    <div style="float:left; width:50%;height:100%">
-                        <div id="map"></div>
-
-                    </div>
-
+                        <div style=" height: 300px; z-index: 999; width:300px ; position: absolute;margin-top: 70%;margin-left: -5%" id="map"></div>
 
                     <!-- //map-bottom -->
 
@@ -539,6 +535,14 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
     <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBoI276ljCuDSuJtwX7hpN5O5wi8P-rsZc&language=en&libraries=places&callback=init">
     </script>
+    <script src="../static/js/index_map.js"></script>
+
+    <!-- for-datetime-picker-->
+        <script src="../static/js/bootstrap-datetimepicker.js"></script>
+        <link href="../static/css/bootstrap-datetimepicker.css" rel="stylesheet">
+        <link href="../static/css/datetimepicker.css" rel="stylesheet">
+        <!-- //for-datetime-picker-->
+
     </body>
     </html>
 {% endif %}
