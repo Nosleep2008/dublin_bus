@@ -671,12 +671,12 @@ h2.resp-accordion:first-child {
 	background: #2E3641;
 }
 /* start map */
-.map{
+.map_mobile{
 	margin-top: 12%;
 	background: #ffffff;
 	position: relative;
 }
-.map h4{
+.map_mobile h4{
 	font-family: 'Monda', sans-serif;
 	background: #2E3641;
 	color: #ffffff;
@@ -684,10 +684,10 @@ h2.resp-accordion:first-child {
 	text-transform: capitalize;
 	font-size: 2em;
 }
-.map form{
+.map_mobile form{
 	padding: 8%;
 }
-.map form input[type="text"]{
+.map_mobile form input[type="text"]{
 	font-family: 'open_sansregular';
 	padding: 10px;
 	outline: none;
@@ -704,7 +704,7 @@ h2.resp-accordion:first-child {
 	-moz-border-radius: 5px;
 	-o-border-radius: 5px;
 }
-.map form input[type="submit"]{
+.map_mobile form input[type="submit"]{
 	font-family: 'open_sansregular';
 	background: #F97E76;
 	color: #ffffff;
@@ -727,7 +727,7 @@ h2.resp-accordion:first-child {
 	-moz-border-radius: 5px;
 	-o-border-radius: 5px;
 }
-.map form input[type="submit"]:hover{
+.map_mobile form input[type="submit"]:hover{
 	background: #2E3641;
 }
 /* start span3_of_3 style */
