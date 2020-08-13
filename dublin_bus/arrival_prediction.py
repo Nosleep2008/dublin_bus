@@ -3,6 +3,21 @@ import pandas as pd
 import requests
 from datetime import datetime
 
+
+def check_routes(id):
+    id = str(id)
+    df = pd.read_csv('./model_files/routeID.csv')
+    arr = df.values.tolist()
+    n = []
+    for i in arr:
+        n.append(i[0])
+    #print(n)
+    if id in n:
+        return True
+    else:
+        return False
+
+
 def getOneCall(UnixTime):
     url = 'https://api.openweathermap.org/data/2.5/onecall?lat=53.3477767&lon=-6.2676788&appid=dbb2b9eb4f9424b9c2c168ad52c077d9'
     response = requests.get(url)
@@ -41,7 +56,7 @@ def getOneCall(UnixTime):
     return result
 
 
-def prediction(routeName, passengerArrivalTime, stopId):
+def prediction(routeName, passengerArrivalTime):
     """routeName is string
     passengerArrivalTime is date object
     stopId is string"""
@@ -56,14 +71,15 @@ def prediction(routeName, passengerArrivalTime, stopId):
         'float64')
     df[['wind_deg', 'clouds_all']] = df[['wind_deg', 'clouds_all']].astype('int64')
     #######################
-    unixTime = datetime.timestamp(time)
+    unixTime = int(datetime.timestamp(time))
+    print('i need unix time')
+    print(unixTime)
     #print(datetime.fromtimestamp(unixTime))
     time = pd.Series(time)
     hour = (time.dt.minute/60)[0] + time.dt.hour[0]
     month = time.dt.month[0]
     day = time.dt.day[0]
     week = time.dt.dayofweek[0]
-    stop = stopId
     ############
     data = getOneCall(unixTime)
     if data == {}:
@@ -85,6 +101,8 @@ def prediction(routeName, passengerArrivalTime, stopId):
     arrival_time = model.predict(df)
     #unixTime = unixTime + float(arrival_time[0])
     result_time = int(arrival_time[0])
+    print("this is result")
+    print(result_time)
     #readableTime = datetime.fromtimestamp(unixTime)
     #return str(readableTime)[0:19]
     return result_time

@@ -82,7 +82,32 @@ def route(request):
             passengerArrivalTime = lastStepEndTime
 
             # If stop id does not exist
-            if startStop.get('id') == None or endStop.get('id') == None:
+
+            #if startStop.get('id') == None or endStop.get('id') == None:
+            is_route_exsit = arrival_prediction.check_routes(routeName)
+            if is_route_exsit:
+                # If stop id does exist
+                #startStopId = startStop['id']
+                #endStopId = endStop['id']
+                passengerArrivalTime_str = str(datetime.fromtimestamp(passengerArrivalTime))
+                print(passengerArrivalTime_str)
+                passengerWaitingTime = arrival_prediction.prediction(routeName, passengerArrivalTime_str)
+
+                if isinstance(passengerWaitingTime, int):
+                    transitArrivalTime = passengerWaitingTime + passengerArrivalTime
+                else:
+                    # Use the depart time estimated by google maps api as transitArrivalTime
+                    transitArrivalTime = int(
+                        datetime.timestamp(
+                            datetime.strptime(
+                                step['googleDepart']['value'], '%Y-%m-%dT%H:%M:%S.%fZ'
+                            )))
+                    passengerWaitingTime = transitArrivalTime - passengerArrivalTime
+
+                print("test")
+                print(passengerWaitingTime)
+                print(passengerArrivalTime)
+            else:
                 # Use the depart time estimated by google maps api as transitArrivalTime
                 transitArrivalTime = int(
                     datetime.timestamp(
@@ -90,17 +115,11 @@ def route(request):
                             step['googleDepart']['value'], '%Y-%m-%dT%H:%M:%S.%fZ'
                         )))
                 passengerWaitingTime = transitArrivalTime - passengerArrivalTime
-            else:
-                # If stop id does exist
-                startStopId = startStop['id']
-                endStopId = endStop['id']
-                passengerArrivalTime_str = str(datetime.fromtimestamp(passengerArrivalTime))
-                passengerWaitingTime = arrival_prediction.prediction(routeName, passengerArrivalTime_str, startStopId)
-                transitArrivalTime = passengerWaitingTime + passengerArrivalTime
+            transitArrivalTime_str = datetime.utcfromtimestamp(transitArrivalTime).strftime('%Y-%m-%d %H:%M:%S')
 
             stepResultDict = {'travelMode': 'BUS',
                               'routeName': routeName,
-                              'transitArrivalTime': transitArrivalTime,
+                              'transitArrivalTime': transitArrivalTime_str,
                               'estimateWaitingTime': passengerWaitingTime
                               }
 
