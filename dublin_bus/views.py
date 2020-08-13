@@ -98,9 +98,11 @@ def route(request):
                 passengerWaitingTime = arrival_prediction.prediction(routeName, passengerArrivalTime_str, startStopId)
                 transitArrivalTime = passengerWaitingTime + passengerArrivalTime
 
+            transitArrivalTime_str = datetime.utcfromtimestamp(transitArrivalTime).strftime('%Y-%m-%d %H:%M:%S')
+
             stepResultDict = {'travelMode': 'BUS',
                               'routeName': routeName,
-                              'transitArrivalTime': transitArrivalTime,
+                              'transitArrivalTime': transitArrivalTime_str,
                               'estimateWaitingTime': passengerWaitingTime
                               }
 
