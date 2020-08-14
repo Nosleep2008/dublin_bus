@@ -62,7 +62,7 @@ def route(request):
 
         # Step by tram(LUAS)
         if travelMode == 'TRAM':
-            routeName = step['lineName']
+            routeName = "Dublin Tram"
             passengerArrivalTime = lastStepEndTime
             # Use the depart time estimated by google maps api as transitArrivalTime
             transitArrivalTime = int(
@@ -88,35 +88,28 @@ def route(request):
             endStop = step['endStop']
             routeName = step['lineName']
             passengerArrivalTime = lastStepEndTime
-            print("what inside google>>>")
-            print(step)
-            print(startStop,endStop)
             # If stop id does not exist
-
             #if startStop.get('id') == None or endStop.get('id') == None:
-            is_route_exsit = arrival_prediction.check_routes(routeName)
+            is_route_exsit = arrival_prediction.check_routes(routeName) and startStop.get('id') != None and endStop.get('id') != None
             if is_route_exsit:
-                # If stop id does exist
-                #startStopId = startStop['id']
-                #endStopId = endStop['id']
                 passengerArrivalTime_str = str(datetime.fromtimestamp(passengerArrivalTime))
-                print(passengerArrivalTime_str)
-                passengerWaitingTime = arrival_prediction.prediction(routeName,startStop,endStop,passengerArrivalTime_str)
-
-                if isinstance(passengerWaitingTime, float):
-                    transitArrivalTime = passengerWaitingTime + passengerArrivalTime
+                duration = arrival_prediction.prediction(routeName,startStop.get('id'),endStop.get('id'),passengerArrivalTime_str)[0]
+                transitArrivalTime = arrival_prediction.prediction(routeName,startStop.get('id'),endStop.get('id'),passengerArrivalTime_str)[1]
+                if isinstance(duration,float):
+                    duration = duration * 3600
+                    totalTransitTime += duration
+                    transitArrivalTime_str = trans(passengerArrivalTime_str, transitArrivalTime)
+                    passengerWaitingTime = int((datetime.strptime(transitArrivalTime_str, '%Y-%m-%d %H:%M:%S')
+                    - datetime.strptime(passengerArrivalTime_str, '%Y-%m-%d %H:%M:%S')).total_seconds())
                 else:
-                    # Use the depart time estimated by google maps api as transitArrivalTime
                     transitArrivalTime = int(
                         datetime.timestamp(
                             datetime.strptime(
                                 step['googleDepart']['value'], '%Y-%m-%dT%H:%M:%S.%fZ'
                             )))
                     passengerWaitingTime = transitArrivalTime - passengerArrivalTime
-
-                print("test")
-                print(passengerWaitingTime)
-                print(passengerArrivalTime)
+                    totalTransitTime += step['googleDuration']['value']
+                    transitArrivalTime_str = datetime.utcfromtimestamp(transitArrivalTime).strftime('%Y-%m-%d %H:%M:%S')
             else:
                 # Use the depart time estimated by google maps api as transitArrivalTime
                 transitArrivalTime = int(
@@ -125,9 +118,9 @@ def route(request):
                             step['googleDepart']['value'], '%Y-%m-%dT%H:%M:%S.%fZ'
                         )))
                 passengerWaitingTime = transitArrivalTime - passengerArrivalTime
-            transitArrivalTime_str = datetime.utcfromtimestamp(transitArrivalTime).strftime('%Y-%m-%d %H:%M:%S')
-
-            transitArrivalTime_str = datetime.utcfromtimestamp(transitArrivalTime).strftime('%Y-%m-%d %H:%M:%S')
+                totalTransitTime += step['googleDuration']['value']
+                transitArrivalTime_str = datetime.utcfromtimestamp(transitArrivalTime).strftime('%Y-%m-%d %H:%M:%S')
+                print(passengerWaitingTime, transitArrivalTime, transitArrivalTime_str)
 
             stepResultDict = {'travelMode': 'BUS',
                               'routeName': routeName,
@@ -136,7 +129,6 @@ def route(request):
                               }
 
             totalWaitingTime += passengerWaitingTime
-            totalTransitTime += step['googleDuration']['value']
             # Use the depart time estimated by google maps api
             lastStepEndTime = transitArrivalTime + step['googleDuration']['value']
 
@@ -248,3 +240,11 @@ def team15_prediction(request):
 
     result = [{'errorcode': errorcode, 'duration': duration[0], 'start_time':duration[1]}]
     return JsonResponse(result, safe=False)
+
+def trans(time_a,time_b):
+    a = time_a[0:11]
+    b = time_a[16:]
+    if ":" in time_b:
+            return a + time_b + b
+    else:
+        return " "
