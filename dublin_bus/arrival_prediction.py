@@ -56,12 +56,54 @@ def getOneCall(UnixTime):
     return result
 
 
-def prediction(routeName, passengerArrivalTime):
+def prediction(routeName,stop_start,stop_final,passengerDepartureTime):
+    """routeName is string
+    passengerArrivalTime is date object
+    stopId is string"""
+    path = './data_files/' + str(routeName) + '.csv'
+    df = pd.read_csv(path)
+    time = pd.to_datetime(passengerDepartureTime)
+    time = pd.Series(time)
+    hour = (time.dt.minute/60)[0] + time.dt.hour[0]
+    #month = time.dt.month[0]
+    #day = time.dt.day[0]
+    week = time.dt.dayofweek[0]
+
+    #  start to get schedule time of final bus stop
+    start_hour = hour
+    print(start_hour)
+    temp1 = df[df['STOPPOINTID'] == stop_start][df['Hour'] >= start_hour][df['Hour'] <= (start_hour+2)][df['week'] == week]
+    if temp1.empty:
+        temp1 = df[df['STOPPOINTID'] == stop_start][df['Hour'] >= (start_hour-0.1)]
+        temp2 = df[df['STOPPOINTID'] == stop_final]
+    else:
+        temp2 = df[df['STOPPOINTID'] == stop_final][df['week'] == week]
+    #print(temp1)
+    #print(temp2)
+    re = pd.merge(temp1, temp2, how='inner', on=['TRIPID', 'VEHICLEID'])
+    #print(re)
+    if re.empty:
+        return "no stops pair"
+    re = re.sort_values(by=['Hour_x'])
+    star_stop_time = re.iat[0, 3]
+    final_stop_time = re.iat[0, 7]
+    # end to get
+    min = (star_stop_time - int(star_stop_time)) * 60
+    min = int(round(min))
+    passengerDepartureTime = passengerDepartureTime[0:11] + str(int(star_stop_time)) + ":" + str(min) + ":" + "00"
+    print(star_stop_time,final_stop_time,passengerDepartureTime)
+    duration = model(routeName, passengerDepartureTime, final_stop_time)
+
+    return duration
+
+
+def model(routeName, passengerDepartureTime, passengerArrivalHour):
     """routeName is string
     passengerArrivalTime is date object
     stopId is string"""
     route = './model_files/' + str(routeName) + '.pkl'
-    time = pd.to_datetime(passengerArrivalTime)
+    time = pd.to_datetime(passengerDepartureTime)
+    print(time)
     df = pd.read_csv('./model_files/one_row.csv')
     save = ['temp', 'feels_like', 'wind_speed', 'wind_deg', 'clouds_all', 'Hour']
     df[save] = df[save].astype('object')
@@ -85,7 +127,6 @@ def prediction(routeName, passengerArrivalTime):
     if data == {}:
         return "input date invalid!"
     model = joblib.load(route)
-
     df[['weather_main_' + data['weather_main']]] = 1
     df[['Day_' + str(day)]] = 1
     df[['week_' + str(week)]] = 1
@@ -98,15 +139,19 @@ def prediction(routeName, passengerArrivalTime):
     df['clouds_all'] = data['clouds_all']
     #print(df)
     ###############
-    arrival_time = model.predict(df)
-    #unixTime = unixTime + float(arrival_time[0])
-    result_time = int(arrival_time[0])
-    print("this is result")
-    print(result_time)
-    #readableTime = datetime.fromtimestamp(unixTime)
-    #return str(readableTime)[0:19]
-    return result_time
+    depart_time_diff = model.predict(df)
+    depart_time = hour
+    depart_time_diff = int(depart_time_diff[0])
+    ###############
+    df["Hour"] = passengerArrivalHour
+    arrive_time_diff = model.predict(df)
+    arrive_time = passengerArrivalHour
+    arrive_time_diff = int(arrive_time_diff[0])
+    ################
+    duration = arrive_time - depart_time - (depart_time_diff - arrive_time_diff)/3600
+    return duration
 
-#a = prediction('69X', '2020-07-28 21:54:10', '2323')
-#print(a)
 
+#if __name__ == '__main__':
+#    aaa = prediction("7D",4830,4962,"2020-08-15 5:10:00")
+#    print(aaa)

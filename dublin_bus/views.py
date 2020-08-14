@@ -16,6 +16,14 @@ def index(request):
     return render(request, 'index.html')
 
 
+def planner(request):
+    with open("./data_files/routes_stops.json", 'r') as f:
+        Dict = json.load(f)
+    return render(request, 'contact.html', {
+        'routes_stops': json.dumps(Dict)
+    })
+
+
 @csrf_exempt
 def route(request):
     # Initialise the response variable
@@ -80,7 +88,9 @@ def route(request):
             endStop = step['endStop']
             routeName = step['lineName']
             passengerArrivalTime = lastStepEndTime
-
+            print("what inside google>>>")
+            print(step)
+            print(startStop,endStop)
             # If stop id does not exist
 
             #if startStop.get('id') == None or endStop.get('id') == None:
@@ -91,9 +101,9 @@ def route(request):
                 #endStopId = endStop['id']
                 passengerArrivalTime_str = str(datetime.fromtimestamp(passengerArrivalTime))
                 print(passengerArrivalTime_str)
-                passengerWaitingTime = arrival_prediction.prediction(routeName, passengerArrivalTime_str)
+                passengerWaitingTime = arrival_prediction.prediction(routeName,startStop,endStop,passengerArrivalTime_str)
 
-                if isinstance(passengerWaitingTime, int):
+                if isinstance(passengerWaitingTime, float):
                     transitArrivalTime = passengerWaitingTime + passengerArrivalTime
                 else:
                     # Use the depart time estimated by google maps api as transitArrivalTime
