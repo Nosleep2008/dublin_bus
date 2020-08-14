@@ -60,10 +60,11 @@ def prediction(routeName,stop_start,stop_final,passengerDepartureTime):
     """routeName is string
     passengerArrivalTime is date object
     stopId is string"""
+    print("测试传入最原始参数", passengerDepartureTime)
     num = int(passengerDepartureTime[6])
     num = str(num + 1)
     a = passengerDepartureTime[0:6]
-    b = passengerDepartureTime[7:-1]
+    b = passengerDepartureTime[7:]
     passengerDepartureTime = a + num + b
 
     print("测试传入参数",passengerDepartureTime)
@@ -94,7 +95,9 @@ def prediction(routeName,stop_start,stop_final,passengerDepartureTime):
     re = pd.merge(temp1, temp2, how='inner', on=['TRIPID', 'VEHICLEID'])
     #print(re)
     if re.empty:
-        return "no stops pair"
+        print("no stops pair")
+        result = ["no stops pair", " error...."]
+        return result
     re = re.sort_values(by=['Hour_x'])
     star_stop_time = re.iat[0, 3]
     final_stop_time = re.iat[0, 7]
