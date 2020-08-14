@@ -153,7 +153,6 @@ def model(routeName, passengerDepartureTime, passengerArrivalHour):
     """routeName is string
     passengerArrivalTime is date object
     stopId is string"""
-
     route = './model_files/' + str(routeName) + '.pkl'
     print("passsssssssdtime",passengerDepartureTime)
     time = pd.to_datetime(passengerDepartureTime)
