@@ -97,8 +97,15 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
             $('#search_sumbit').on('click', function () {
                 var depart_time = $('#datetime_picker').datetimepicker('getDate');
-                var depart_str = depart_time.getFullYear() + "-" + depart_time.getMonth() + "-" + depart_time.getDate() + " " +
-                    depart_time.getHours() + ":" + depart_time.getMinutes() + ":" + depart_time.getSeconds();
+                //var depart_str = depart_time.getFullYear() + "-" + depart_time.getMonth() + "-" + depart_time.getDate() + " " + depart_time.getHours() + ":" + depart_time.getMinutes() + ":" + depart_time.getSeconds();
+
+                  var depart_str = depart_time.getFullYear() + "-"
+                    + depart_time.getMonth().toString().padStart(2, "0") + "-"
+                    + depart_time.getDate().toString().padStart(2, "0") + " "
+                    + depart_time.getHours().toString().padStart(2, "0") + ":"
+                    + depart_time.getMinutes().toString().padStart(2, "0") + ":"
+                    + depart_time.getSeconds().toString().padStart(2, "0");
+
 
                 var select_route = document.getElementById("routes_select");
                 var route_index = select_route.selectedIndex;
@@ -143,6 +150,15 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                     success: function (response) {
                         console.log('success');
                         console.log(response);
+                        var result = document.getElementById("result");
+                        var text = '<table class="table table-striped">' +
+	'<caption>Prediction Result</caption><thead><tr><th>Next Bus Arrive Time</th><th>Duration</th> </tr>'+
+	'</thead><tbody><tr>'+
+			'<td>'+ response[0]["start_time"]+'</td>'+
+			'<td>'+ response[0]["duration"]+ " Hour" +'</td>'+
+		'</tr></tbody></table>';
+                        console.log(response[0]["start_time"])
+                        result.innerHTML = text;
 
                     },
                 });
@@ -242,7 +258,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
             </div>
             <button id="search_sumbit" type="button" class="btn btn-primary">Submit</button>
             <!--routes selection-->
+
         </div>
+        <div style="float: left; width: 50% ; color: #a94442;font-family: 'Josefin Sans', sans-serif;margin-top: 5% ;margin-bottom: 10%" id="result" >Result~~~~~ will be here ~~~~~(Several seconds to loading.... )</div>
+
 
     </div>
 </div>

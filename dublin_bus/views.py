@@ -243,7 +243,8 @@ def team15_prediction(request):
     start_stop = request.POST.get('start')
     end_stop = request.POST.get('end')
     depart_time = request.POST.get('depart_time')
+    #print(depart_time)
     duration = arrival_prediction.prediction(routeName,start_stop, end_stop, depart_time)
 
-    result = [{'errorcode': errorcode, 'duration':duration}]
+    result = [{'errorcode': errorcode, 'duration': duration[0], 'start_time':duration[1]}]
     return JsonResponse(result, safe=False)

@@ -60,6 +60,16 @@ def prediction(routeName,stop_start,stop_final,passengerDepartureTime):
     """routeName is string
     passengerArrivalTime is date object
     stopId is string"""
+    num = int(passengerDepartureTime[6])
+    num = str(num + 1)
+    a = passengerDepartureTime[0:6]
+    b = passengerDepartureTime[7:-1]
+    passengerDepartureTime = a + num + b
+
+    print("测试传入参数",passengerDepartureTime)
+    #print(routeName,stop_start,stop_final,passengerDepartureTime)
+    stop_start = int(stop_start)
+    stop_final = int(stop_final)
     path = './data_files/' + str(routeName) + '.csv'
     df = pd.read_csv(path)
     time = pd.to_datetime(passengerDepartureTime)
@@ -71,8 +81,9 @@ def prediction(routeName,stop_start,stop_final,passengerDepartureTime):
 
     #  start to get schedule time of final bus stop
     start_hour = hour
-    print(start_hour)
+    #print(start_hour)
     temp1 = df[df['STOPPOINTID'] == stop_start][df['Hour'] >= start_hour][df['Hour'] <= (start_hour+2)][df['week'] == week]
+
     if temp1.empty:
         temp1 = df[df['STOPPOINTID'] == stop_start][df['Hour'] >= (start_hour-0.1)]
         temp2 = df[df['STOPPOINTID'] == stop_final]
@@ -90,20 +101,60 @@ def prediction(routeName,stop_start,stop_final,passengerDepartureTime):
     # end to get
     min = (star_stop_time - int(star_stop_time)) * 60
     min = int(round(min))
-    passengerDepartureTime = passengerDepartureTime[0:11] + str(int(star_stop_time)) + ":" + str(min) + ":" + "00"
+    '''
+    array = passengerDepartureTime.split(" ")
+    date1 = array[0].split("-")
+    date1[0] = int(date1[0])
+    date1[1] = int(date1[1])
+    date1[2] = int(date1[2])
+    print(date1)
+
+    if date1[1] < 10 and len(date1[1]<=1):
+        date1[1] = "0" + date1[1]
+
+    if date1[2] < 10 and len(date1[1]<=1):
+        date1[2] = "0" + date1[2]
+
+    date2 = array[1].split(":")
+    print(date2)
+    if date2[0] < 10 and len(date2[0] <= 1):
+        date2[0] = "0" + date2[0]
+
+    if date2[1] < 10 and len(date2[1] <= 1):
+        date2[1] = "0" + date2[1]
+
+    if date2[2] < 10 and len(date2[2] <= 1):
+        date2[2] = "0" + date2[2]
+    date2[0] = int(date2[0])
+    date2[1] = int(date2[1])
+    date2[2] = int(date2[2])
+    passengerDepartureTime = str(date1[0])+"-"+str(date1[1])+"-"+str(date1[2]) + " " +str(date2[0])+":"+str(date2[1])+":"+str(date2[2])
+        '''
+    if int(star_stop_time) < 10:
+        start = "0" + str(int(star_stop_time))
+    else:
+        start = str(int(star_stop_time))
+    passengerDepartureTime = passengerDepartureTime[0:11] + start + ":" + str(min) + ":" + "00"
     print(star_stop_time,final_stop_time,passengerDepartureTime)
     duration = model(routeName, passengerDepartureTime, final_stop_time)
-
-    return duration
+    print("duration",duration)
+    if not isinstance(duration,str):
+        duration = round(abs(duration), 2)
+    result = [duration, " "]
+    result[1] = start + ":" + " " + str(min)
+    print(result)
+    return result
 
 
 def model(routeName, passengerDepartureTime, passengerArrivalHour):
     """routeName is string
     passengerArrivalTime is date object
     stopId is string"""
+
     route = './model_files/' + str(routeName) + '.pkl'
+    print("passsssssssdtime",passengerDepartureTime)
     time = pd.to_datetime(passengerDepartureTime)
-    print(time)
+    #print(time)
     df = pd.read_csv('./model_files/one_row.csv')
     save = ['temp', 'feels_like', 'wind_speed', 'wind_deg', 'clouds_all', 'Hour']
     df[save] = df[save].astype('object')
