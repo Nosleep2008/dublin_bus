@@ -235,3 +235,15 @@ def delete_favourite(request):
     result = [{'favourite': favourite}]
 
     return JsonResponse(result, safe=False)
+
+@csrf_exempt
+def team15_prediction(request):
+    errorcode = 0;
+    routeName = request.POST.get('route')
+    start_stop = request.POST.get('start')
+    end_stop = request.POST.get('end')
+    depart_time = request.POST.get('depart_time')
+    duration = arrival_prediction.prediction(routeName,start_stop, end_stop, depart_time)
+
+    result = [{'errorcode': errorcode, 'duration':duration}]
+    return JsonResponse(result, safe=False)
