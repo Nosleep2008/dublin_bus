@@ -22,6 +22,26 @@ Anaconda is popular because it brings many of the tools used in data science and
 
 MySQL is used with other programs to implement applications that need relational database capability.
 
+#### mange.py Configuration
+
+![Configuration](https://raw.githubusercontent.com/junyi-z/COMP47360/master/image/K9AH%601%7DHRDXWDU%5DI0HS2EL5.png)
+
+#### model_files
+
+https://drive.google.com/file/d/1DaWRS5d_7RkhxjqP3dSmg18TICjv0xWR/view
+
+![model](https://raw.githubusercontent.com/junyi-z/COMP47360/master/image/model.png)
+
+You should download it and unzip to 'dublin_bus_summer/model_files'. Because the model files are too large to upload to GitHub.
+
+#### data_files
+
+https://drive.google.com/file/d/1Impyfv-tbxZNE0o5hhrODQqPNmsdRpAu/view
+
+![data](https://raw.githubusercontent.com/junyi-z/COMP47360/master/image/data.png)
+
+You should download it and unzip to 'dublin_bus_summer/data_files'. Because the data files are too large to upload to GitHub.
+
 ## Install
 
 1. Install django
@@ -72,13 +92,34 @@ MySQL is used with other programs to implement applications that need relational
    conda install sys
    ```
 
-9. Clone the git repository
+9. Install pymysql
 
    ```
-   git clone https://csgitlab.ucd.ie/group_15/dublin_bus_summer.git
+   conda install pymysql
    ```
 
-   
+10. Install sshtunnel
+
+    ```
+    conda install sshtunnel
+    ```
+
+11. Clone the git repository
+
+    ```
+    git clone https://csgitlab.ucd.ie/group_15/dublin_bus_summer.git
+    ```
+
+
+## Usage
+
+Consider that the bus route stations in the BrightSpace data are not exactly the same as the current real-time bus route stations. 
+
+We did two things.
+
+The bus stop selection for the Home page is based on existing bus stops.
+
+The bus routes and stops on Advanced Planner are derived from BrightSpace data.
 
 ## Contributors
 
